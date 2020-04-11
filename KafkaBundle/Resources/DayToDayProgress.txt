@@ -1,0 +1,25 @@
+
+
+#Day1 #10-Apr-2020
+
+Setting up the kafka in local machine.
+
+Step 1:  Download the kafka 
+https://www.apache.org/dyn/closer.cgi?path=/kafka/2.4.1/kafka_2.11-2.4.1.tgz
+
+Extract it to E: drive.
+
+Step 2:
+Change the zookeeper.properties
+
+Step 3:
+Change the server.properties
+
+Step 4:
+Start the zookeeper
+zookeeper-server-start.bat C:\kafka_2.11-2.4.1\config\zookeeper.properties
+
+Step 5:
+Start the Kafka 
+
+kafka-server-start.bat C:\kafka_2.11-2.4.1\config\server.properties
