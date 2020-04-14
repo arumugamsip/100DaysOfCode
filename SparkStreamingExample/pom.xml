@@ -23,11 +23,13 @@
     <groupId>org.apache.spark</groupId>
     <artifactId>spark-streaming-twitter_2.11</artifactId>
     <version>1.6.3</version>
+    
 </dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-core_2.10</artifactId>
 			<version>1.6.0</version>
+			
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming-kafka -->
 <dependency>
@@ -35,12 +37,32 @@
     <artifactId>spark-streaming-kafka_2.10</artifactId>
     <version>1.6.0</version>
 </dependency>
+
+<dependency>
+    <groupId>com.github.scala-incubator.io</groupId>
+    <artifactId>scala-io-file_2.10</artifactId>
+    <version>0.4.3</version>
+</dependency>
+
 <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming -->
 <dependency>
     <groupId>org.apache.spark</groupId>
     <artifactId>spark-streaming_2.10</artifactId>
     <version>1.6.0</version>
     <scope>provided</scope>
+    
+			 <exclusions>
+           <exclusion>
+               <groupId>log4j</groupId>
+               <artifactId>log4j</artifactId>
+           </exclusion>
+           </exclusions>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.typesafe/config -->
+<dependency>
+    <groupId>com.typesafe</groupId>
+    <artifactId>config</artifactId>
+    <version>1.2.1</version>
 </dependency>
 
 
