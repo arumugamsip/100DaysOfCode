@@ -1,0 +1,73 @@
+/**
+  * Copyright 2020 Confluent Inc.
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  * http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+
+
+package com.tamilboomi.main
+
+import java.util.Optional
+import java.util.Properties
+import org.apache.kafka.clients.producer._
+import org.apache.kafka.clients.admin.{AdminClient, NewTopic}
+import org.apache.kafka.common.errors.TopicExistsException
+import java.util.Collections
+import com.tamilboomi.util.Utils
+import com.fasterxml.jackson.databind.ObjectMapper
+import scala.util.Try
+
+object Producer extends App {
+  val configFileName = "config.properties"
+  val topicName = "InputTamilboomiTopic"//args(1)
+  val MAPPER = new ObjectMapper
+  val props = Utils.buildProperties(configFileName)
+  createTopic(topicName, props)
+  val producer = new KafkaProducer[String, String](props)
+
+  val callback = new Callback {
+    override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
+      Option(exception) match {
+        case Some(err) => println(s"Failed to produce: $err")
+        case None =>  println(s"Produced record at $metadata")
+      }
+    }
+  }
+
+ // for( i <- 1 to 5) {   
+    val key: String = "truce"
+    val value=Utils.geturl("http://api.openweathermap.org/data/2.5/forecast?id=524901&zip=600113,IN&cnt=1&appid=c854fe1b651d9266650071e13828e7c2")
+    println(value)
+    //val value: String = "this is count "+i
+    val record = new ProducerRecord[String, String](topicName, key, value)
+    producer.send(record, callback)
+  //}
+  producer.flush()
+  producer.close()
+  println("Wrote five records to " + topicName)
+
+
+  def createTopic(topic: String, clusterConfig: Properties): Unit = {
+    val newTopic = new NewTopic(topic, Optional.empty[Integer](), Optional.empty[java.lang.Short]());
+    val adminClient = AdminClient.create(clusterConfig)
+    Try (adminClient.createTopics(Collections.singletonList(newTopic)).all.get).recover {
+      case e :Exception =>
+        // Ignore if TopicExistsException, which may be valid if topic exists
+        if (!e.getCause.isInstanceOf[TopicExistsException]) throw new RuntimeException(e)
+    }
+    adminClient.close()
+  }
+
+
+  
+}
